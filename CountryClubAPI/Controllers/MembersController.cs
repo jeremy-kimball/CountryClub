@@ -31,7 +31,7 @@ namespace CountryClubAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateMember(Member member)
+        public ActionResult PostMember(Member member)
         {
             //Check if sent in model is valid
             if(!ModelState.IsValid)
@@ -45,6 +45,25 @@ namespace CountryClubAPI.Controllers
             var savedMember = _context.Members.OrderBy(m => m.Id).Last();
 
             Response.StatusCode = 201;
+            return new JsonResult(savedMember);
+        }
+
+
+        [HttpPut]
+        public ActionResult PutMember(Member member)
+        {
+            //Check if sent in model is valid
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            _context.Members.Update(member);
+            _context.SaveChanges();
+
+            var savedMember = _context.Members.Find(member.Id);
+
+            Response.StatusCode = 200;
             return new JsonResult(savedMember);
         }
     }
