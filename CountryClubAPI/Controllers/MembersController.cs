@@ -34,7 +34,7 @@ namespace CountryClubAPI.Controllers
         public ActionResult PostMember(Member member)
         {
             //Check if sent in model is valid
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
@@ -47,7 +47,6 @@ namespace CountryClubAPI.Controllers
             Response.StatusCode = 201;
             return new JsonResult(savedMember);
         }
-
 
         [HttpPut]
         public ActionResult PutMember(Member member)
@@ -63,8 +62,25 @@ namespace CountryClubAPI.Controllers
 
             var savedMember = _context.Members.Find(member.Id);
 
-            Response.StatusCode = 200;
+            Response.StatusCode = 204;
             return new JsonResult(savedMember);
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult DeleteMember(int id)
+        {
+            //If ID doesn't exist return bad request
+            if(_context.Members.Find(id) == null)
+            {
+                return BadRequest();
+            }
+
+            var member = _context.Members.Find(id);
+            _context.Members.Remove(member);
+            _context.SaveChanges();
+
+            Response.StatusCode = 204;
+            return new JsonResult(_context.Members);
         }
     }
 }
